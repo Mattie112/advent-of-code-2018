@@ -39,6 +39,9 @@ while ($run) {
     $pass++;
 }
 
+// Alternate day1 just for the funs
+echo "Part 1 alternate solution (EVAL FTW): " . eval("return " . file_get_contents(__DIR__ . "/day1-input.txt") . ";") . PHP_EOL;
+
 echo "Part 1: " . $frequency . PHP_EOL;
 echo "Part 2: " . $frequency2 . " (" . $pass . " passes)" . PHP_EOL;
 
