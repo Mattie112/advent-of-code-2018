@@ -38,7 +38,7 @@ while (count($tree) > 0) {
             }
         }
         if (!$is_child) {
-            echo $parent . " is not a child" . PHP_EOL;
+//            echo $parent . " is not a child" . PHP_EOL;
             if (!in_array($parent, $not_a_child, true)) {
                 $not_a_child[] = $parent;
             }
@@ -62,5 +62,3 @@ while (count($tree) > 0) {
 }
 
 echo "Order (part #1): " . $order . PHP_EOL;
-
-var_dump($tree);
