@@ -26,7 +26,15 @@ if ($file = fopen(__DIR__ . "/day9-input.txt", "rb")) {
             if ($debug) {
                 echo "[-] (0)" . PHP_EOL;
             }
+            $time = 0;
+            $last_time = 0;
+            $time_between_log = 0;
             for ($i = 1; $i < $last_marble; $i++) {
+                $time = microtime(true);
+                if ($i % 100 === 0) {
+                    echo $i . " / " . $last_marble . " (" . $last_time . " seconds for last marble), Time between log (100 marbles): " . (microtime(true) - $time_between_log) . PHP_EOL;
+                    $time_between_log = microtime(true);
+                }
                 $player = (($player + 1) % $player_amount);
                 if ($debug) {
                     echo "[" . $player . "] ";
@@ -56,7 +64,7 @@ if ($file = fopen(__DIR__ . "/day9-input.txt", "rb")) {
                     }
                     echo PHP_EOL;
                 }
-
+                $last_time = microtime(true) - $time;
             }
 
             echo max($scores) . PHP_EOL;
