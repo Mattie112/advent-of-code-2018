@@ -19,10 +19,9 @@ $tracks = [];
 $carts = [];
 $carts_by_yx = [];
 
-
-if ($file = fopen(__DIR__ . "/day13-test.txt", "rb")) {
+if ($file = fopen(__DIR__ . "/day13-input.txt", "rb")) {
     while (!feof($file)) {
-        $line = trim(fgets($file));
+        $line = trim(fgets($file), "\n\r");
         if ($line === "") {
             continue;
         }
@@ -49,15 +48,26 @@ if ($file = fopen(__DIR__ . "/day13-test.txt", "rb")) {
 }
 
 // Now that we have both tracks & carts we can execute the movement ofthe carts!!!yeah!
-
-//todo sort the carts so we have it sorted by $y, $x
-$iterations = 1000;
+$part1 = "";
+$iterations = 999999;
 for ($a = 0; $a < $iterations; $a++) {
+    $carts_to_be_removed = [];
     $width = count($tracks[0]);
     uasort($carts, function ($a, $b) use ($width) {
         return $a["x"] + ($a["y"] * $width) <=> $b["x"] + ($b["y"] * $width);
     });
+
     foreach ($carts as $i => &$cart) {
+        $y = &$cart["y"];
+        $x = &$cart["x"];
+        $direction = &$cart["direction"];
+        $turns = &$cart["turns"];
+        echo $x . "x" . $y . PHP_EOL;
+    }
+
+    foreach ($carts as $i => &$cart) {
+        echo "starting cart " . $i . PHP_EOL;
+
         $y = &$cart["y"];
         $x = &$cart["x"];
         $direction = &$cart["direction"];
@@ -77,7 +87,6 @@ for ($a = 0; $a < $iterations; $a++) {
                 $x++;
                 break;
         }
-
 
         // Now that that is done see if we need to make a turn
         $track = $tracks[$y][$x];
@@ -108,7 +117,7 @@ for ($a = 0; $a < $iterations; $a++) {
                             $direction = CART_LEFT;
                             break;
                         case  CART_DOWN:
-                            $direction = RIGHT_TO_LEFT;
+                            $direction = CART_RIGHT;
                             break;
                         case CART_LEFT:
                             $direction = CART_UP;
@@ -137,16 +146,31 @@ for ($a = 0; $a < $iterations; $a++) {
                 continue;
             }
             if ($y === $cart_to_check["y"] && $x === $cart_to_check["x"]) {
-                $cart["direction"] = "X";
                 debug($carts, $tracks);
+                if ($part1 === "") {
+                    $part1 = "COLLISSION #1 AT x: " . $x . " - y: " . $y . PHP_EOL;
+                }
                 echo "COLLISSION AT x: " . $x . " - y: " . $y . PHP_EOL;
-                die();
+                $carts_to_be_removed[] = $check_index;
+                $carts_to_be_removed[] = $i;
+
+                echo "Carts left: " . count($carts) . PHP_EOL;
             }
         }
+        echo "done with cart " . $i . PHP_EOL;
     }
-
-    debug($carts, $tracks);
-
+    foreach ($carts_to_be_removed as $id) {
+        unset($carts[$id]);
+    }
+    if (count($carts) === 1) {
+        $tmparr = $carts;
+        $tmpcart = reset($tmparr);
+        debug($carts, $tracks);
+        echo $part1;
+        echo "Last cart position x:" . $tmpcart["x"] . " - y:" . $tmpcart["y"] . " after " . $a . " ticks" . PHP_EOL;
+        die();
+    }
+    echo "-------------------------------------" . PHP_EOL;
 }
 
 function debug($carts, $tracks)
@@ -156,9 +180,8 @@ function debug($carts, $tracks)
         $carts_by_yx[$tmp["y"]][$tmp["x"]] = $tmp["direction"];
     }
     // DEBUG
-    echo PHP_EOL . PHP_EOL . PHP_EOL;
-    for ($j = 0; $j < 100; $j++) {
-        for ($k = 0; $k < 100; $k++) {
+    for ($j = 0; $j < 200; $j++) {
+        for ($k = 0; $k < 200; $k++) {
             if (isset($carts_by_yx[$j][$k])) {
                 echo $carts_by_yx[$j][$k];
             } else {
