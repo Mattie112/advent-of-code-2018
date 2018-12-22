@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * https://adventofcode.com/2018/day/16
+ */
 const OPCODES = [
     'addr',
     'addi',
